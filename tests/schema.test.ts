@@ -173,6 +173,23 @@ describe("SchemaObject", () => {
         })
       ).toBe(`{ [key: string]: (string) | (number) | (boolean); }`);
     });
+
+    // https://www.jsonschemavalidator.net/s/fOyR2UtQ
+    it("properties + oneOf", () => {
+      expect(
+        transform({
+          properties: {
+            a: {
+              type: "string",
+            },
+          },
+          anyOf: [
+            { properties: { b: { type: "string" } }, required: ["b"] },
+            { properties: { c: { type: "string" } }, required: ["c"] },
+          ],
+        })
+      ).toBe(`{"a"?: string;} & (Partial<{"b": string;}>) & (Partial<{"c": string;}>)`);
+    });
   });
 
   describe("comments", () => {
